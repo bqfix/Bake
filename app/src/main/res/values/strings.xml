@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">Bake</string>
+
+    <!-- JsonUtils Strings-->
+
+    <!-- Recipe Keys-->
+    <string name="recipe_id_key">id</string>
+    <string name="recipe_name_key">name</string>
+    <string name="recipe_ingredients_key">ingredients</string>
+    <string name="recipe_steps_key">steps</string>
+    <string name="recipe_servings_key">servings</string>
+    <string name="recipe_image_key">image</string>
+
+    <!-- Ingredients Keys-->
+    <string name="ingredients_quantity_key">quantity</string>
+    <string name="ingredients_measure_key">measure</string>
+    <string name="ingredients_name_key">ingredient</string>
+
+    <!-- StepInstructions Keys -->
+    <string name="step_id_key">id</string>
+    <string name="step_short_descrip_key">shortDescription</string>
+    <string name="step_full_descrip_key">description</string>
+    <string name="step_video_key">videoURL</string>
+    <string name="step_thumbnail_video_key">thumbnailURL</string>
 </resources>
