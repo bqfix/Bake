@@ -9,6 +9,8 @@ import java.util.List;
  *********************************************/
 public class Recipe {
 
+    private final String SERVINGS_ENDING = " servings";
+
     private int mId;
     private String mName;
     private List<Ingredient> mIngredients;
@@ -27,6 +29,10 @@ public class Recipe {
 
     public int getmId() {
         return mId;
+    }
+
+    public String getmIdString() {
+        return String.valueOf(mId);
     }
 
     public void setmId(int mId) {
@@ -61,6 +67,11 @@ public class Recipe {
         return mServings;
     }
 
+    //Altered to return a string as opposed to an int
+    public String getmServingsString() {
+        return String.valueOf(mServings) + SERVINGS_ENDING;
+    }
+
     public void setmServings(int mServings) {
         this.mServings = mServings;
     }
@@ -72,4 +83,6 @@ public class Recipe {
     public void setmImage(String mImage) {
         this.mImage = mImage;
     }
+
+
 }

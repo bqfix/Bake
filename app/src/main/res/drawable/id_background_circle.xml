@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- A circle to encompass the numbers for recipes and steps-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Background Shadow-->
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@android:color/darker_gray"/>
+            <size
+                android:width="40dp"
+                android:height="40dp" />
+            <corners android:radius="18dp" />
+        </shape>
+    </item>
+
+    <!-- Main Circle -->
+    <item android:bottom="2dp"
+        android:right="2dp">
+        <shape android:shape="oval">
+            <solid android:color="@color/id_circle" />
+            <size
+                android:width="40dp"
+                android:height="40dp" />
+            <corners android:radius="18dp" />
+        </shape>
+    </item>
+
+</layer-list>
