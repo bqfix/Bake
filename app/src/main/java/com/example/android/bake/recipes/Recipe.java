@@ -1,5 +1,9 @@
 package com.example.android.bake.recipes;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /*********************************************
@@ -7,9 +11,9 @@ import java.util.List;
  * the MainActivity RecyclerView,            *
  *  and accessed in the DetailsView          *
  *********************************************/
-public class Recipe {
+public class Recipe implements Parcelable {
 
-    private final String SERVINGS_ENDING = " servings";
+    private static final String SERVINGS_ENDING = " servings";
 
     private int mId;
     private String mName;
@@ -85,4 +89,41 @@ public class Recipe {
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.mId);
+        dest.writeString(this.mName);
+        dest.writeList(this.mIngredients);
+        dest.writeList(this.mSteps);
+        dest.writeInt(this.mServings);
+        dest.writeString(this.mImage);
+    }
+
+    protected Recipe(Parcel in) {
+        this.mId = in.readInt();
+        this.mName = in.readString();
+        this.mIngredients = new ArrayList<Ingredient>();
+        in.readList(this.mIngredients, Ingredient.class.getClassLoader());
+        this.mSteps = new ArrayList<StepInstruction>();
+        in.readList(this.mSteps, StepInstruction.class.getClassLoader());
+        this.mServings = in.readInt();
+        this.mImage = in.readString();
+    }
+
+    public static final Parcelable.Creator<Recipe> CREATOR = new Parcelable.Creator<Recipe>() {
+        @Override
+        public Recipe createFromParcel(Parcel source) {
+            return new Recipe(source);
+        }
+
+        @Override
+        public Recipe[] newArray(int size) {
+            return new Recipe[size];
+        }
+    };
 }

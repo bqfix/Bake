@@ -1,11 +1,14 @@
 package com.example.android.bake.recipes;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**************************************
  * A POJO to hold each step in        *
  * a recipe, used in the Recipe class *
  **************************************/
-public class StepInstruction {
+public class StepInstruction implements Parcelable {
 
     private int mStepNumber;
     private String mShortDescription;
@@ -50,4 +53,37 @@ public class StepInstruction {
     public void setmVideoURL(String mVideoURL) {
         this.mVideoURL = mVideoURL;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.mStepNumber);
+        dest.writeString(this.mShortDescription);
+        dest.writeString(this.mFullDescription);
+        dest.writeString(this.mVideoURL);
+    }
+
+    protected StepInstruction(Parcel in) {
+        this.mStepNumber = in.readInt();
+        this.mShortDescription = in.readString();
+        this.mFullDescription = in.readString();
+        this.mVideoURL = in.readString();
+    }
+
+    public static final Parcelable.Creator<StepInstruction> CREATOR = new Parcelable.Creator<StepInstruction>() {
+        @Override
+        public StepInstruction createFromParcel(Parcel source) {
+            return new StepInstruction(source);
+        }
+
+        @Override
+        public StepInstruction[] newArray(int size) {
+            return new StepInstruction[size];
+        }
+    };
 }

@@ -26,6 +26,12 @@
 
     <!-- Main Activity Strings -->
     <string name="recipe_image_descrip">Recipe Image</string>
+    <string name="main_activity_title">Cookbook</string>
+    <string name="recipe_parcelable_key">recipe_parcelable</string>
+
+    <!-- Detail Activity Strings -->
+    <string name="detail_activity_title">Recipe</string>
+    <string name="recipe_unavailable_error">Recipe not available.</string>
 
 
     <!-- Credit Strings -->

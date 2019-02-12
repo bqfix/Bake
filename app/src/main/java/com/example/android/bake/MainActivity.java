@@ -1,10 +1,10 @@
 package com.example.android.bake;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.example.android.bake.recipes.Recipe;
@@ -23,32 +23,34 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
 
     private final String JSON_LOCATION = "baking_recipes.json";
     private List<Recipe> mRecipes;
-    private RecyclerView mRecipeRecyclerView;
+    private RecyclerView mRecipeRecycler;
     private RecipeAdapter mRecipeAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTitle(getString(R.string.main_activity_title));
 
         //Get the list of recipes from JSON
         mRecipes = JsonUtils.parseJsonForRecipes(this, JSON_LOCATION);
 
         //Setup views
-        mRecipeRecyclerView = (RecyclerView) findViewById(R.id.recipe_rv);
+        mRecipeRecycler = (RecyclerView) findViewById(R.id.recipe_rv);
 
         //RecyclerView Logic
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecipeAdapter = new RecipeAdapter(this);
 
-        mRecipeRecyclerView.setLayoutManager(layoutManager);
-        mRecipeRecyclerView.setAdapter(mRecipeAdapter);
+        mRecipeRecycler.setLayoutManager(layoutManager);
+        mRecipeRecycler.setAdapter(mRecipeAdapter);
         mRecipeAdapter.setRecipes(mRecipes);
     }
 
     @Override
     public void onItemClick(Recipe recipe) {
-        //TODO Implement logic to parcel a Recipe and launch DetailActivity
-        Toast.makeText(this, "Currently Not Implemented", Toast.LENGTH_SHORT).show();
+        Intent detailIntent = new Intent(MainActivity.this, DetailActivity.class);
+        detailIntent.putExtra(getString(R.string.recipe_parcelable_key), recipe);
+        startActivity(detailIntent);
     }
 }
