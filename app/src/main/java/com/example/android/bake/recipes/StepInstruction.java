@@ -30,6 +30,11 @@ public class StepInstruction implements Parcelable {
         this.mStepNumber = mStepNumber;
     }
 
+    //Return a String of the id, indexing begins at 0 so add 1 to id
+    public String getmStepNumberString() {
+        return String.valueOf(mStepNumber + 1);
+    }
+
     public String getmShortDescription() {
         return mShortDescription;
     }

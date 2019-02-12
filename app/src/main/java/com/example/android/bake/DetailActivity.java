@@ -3,6 +3,7 @@ package com.example.android.bake;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -10,9 +11,10 @@ import android.widget.Toast;
 
 import com.example.android.bake.recipes.Ingredient;
 import com.example.android.bake.recipes.Recipe;
+import com.example.android.bake.recipes.StepInstruction;
 import com.squareup.picasso.Picasso;
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity implements StepAdapter.StepClickHandler {
 
     private ImageView mPreviewImage;
     private TextView mNameText;
@@ -21,6 +23,8 @@ public class DetailActivity extends AppCompatActivity {
     private RecyclerView mStepRecycler;
 
     private Recipe mRecipe;
+
+    private StepAdapter mStepAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +62,15 @@ public class DetailActivity extends AppCompatActivity {
             mIngredientsText.append(ingredient.getComposedIngredient() + "\n\n");
         }
 
+        //Recycler Setup
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        mStepAdapter = new StepAdapter(this);
+
+        mStepRecycler.setLayoutManager(layoutManager);
+        mStepRecycler.setAdapter(mStepAdapter);
+
+        mStepAdapter.setSteps(mRecipe.getmSteps());
+
 
     }
 
@@ -65,5 +78,11 @@ public class DetailActivity extends AppCompatActivity {
     private void recipeUnavailable() {
         finish();
         Toast.makeText(this, getString(R.string.recipe_unavailable_error), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onItemClick(StepInstruction stepInstruction) {
+        //TODO Implement launch to Step Activity
+        Toast.makeText(this, "Not currently implemented", Toast.LENGTH_SHORT).show();
     }
 }

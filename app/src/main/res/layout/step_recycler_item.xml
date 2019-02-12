@@ -37,6 +37,7 @@
             android:paddingTop="8dp"
             android:maxLines="5"
             android:ellipsize="end"
+            android:gravity="center"
             android:textColor="@android:color/black"
             tools:text="Long text to test how this looks in the event of an abnormally long short description."/>
 
