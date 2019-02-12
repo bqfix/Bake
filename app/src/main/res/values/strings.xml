@@ -23,8 +23,10 @@
     <string name="step_video_key">videoURL</string>
     <string name="step_thumbnail_video_key">thumbnailURL</string>
 
+
     <!-- Main Activity Strings -->
     <string name="recipe_image_descrip">Recipe Image</string>
+
 
     <!-- Credit Strings -->
     <string name="no_image_credit">Accessed from https://www.freeiconspng.com/img/23489</string>
