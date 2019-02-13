@@ -82,7 +82,9 @@ public class DetailActivity extends AppCompatActivity implements StepAdapter.Ste
 
     @Override
     public void onItemClick(StepInstruction stepInstruction) {
-        //TODO Implement launch to Step Activity
-        Toast.makeText(this, "Not currently implemented", Toast.LENGTH_SHORT).show();
+        Intent mediaIntent = new Intent(DetailActivity.this, MediaActivity.class);
+        mediaIntent.putExtra(getString(R.string.recipe_parcelable_key), mRecipe);
+        mediaIntent.putExtra(getString(R.string.step_number_key), stepInstruction.getmStepNumber());
+        startActivity(mediaIntent);
     }
 }

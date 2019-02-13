@@ -32,6 +32,11 @@
     <!-- Detail Activity Strings -->
     <string name="detail_activity_title">Recipe</string>
     <string name="recipe_unavailable_error">Recipe not available.</string>
+    <string name="step_number_key">step_number</string>
+
+    <!-- Media Activity Strings -->
+    <string name="media_activity_title_base">Step\u0020</string>
+    <string name="info_unavailable_error">Step unavailable.</string>
 
 
     <!-- Credit Strings -->
