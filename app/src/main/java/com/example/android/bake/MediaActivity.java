@@ -74,23 +74,31 @@ public class MediaActivity extends AppCompatActivity {
         //Assign view values
         mStepDescripText.setText(mCurrentStep.getmFullDescription());
 
-
-        //Setup Exoplayer if needed
+        //Get URI String for later usage when initializing ExoPlayer
         mVideoUriString = mCurrentStep.getmVideoURL();
-        if (mVideoUriString.isEmpty()) {
-            showError();
-        } else {
-            initializePlayer();
-        }
-
-
-
-
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onStart() {
+        super.onStart();
+        initializePlayer();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initializePlayer();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        releasePlayer();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
         releasePlayer();
     }
 
@@ -103,25 +111,29 @@ public class MediaActivity extends AppCompatActivity {
 
     //Method to intialize ExoPlayer
     private void initializePlayer() {
-        if (mExoPlayer == null) {
-            //Make ExoPlayer Visible
-            mVideoErrorText.setVisibility(View.GONE);
-            mExoPlayerView.setVisibility(View.VISIBLE);
+        if (mVideoUriString.isEmpty()) {
+            showError();
+        } else {
+            if (mExoPlayer == null) {
+                //Make ExoPlayer Visible
+                mVideoErrorText.setVisibility(View.GONE);
+                mExoPlayerView.setVisibility(View.VISIBLE);
 
-            //ExoPlayer Setup
-            RenderersFactory renderersFactory = new DefaultRenderersFactory(this);
-            TrackSelector trackSelector = new DefaultTrackSelector();
-            LoadControl loadControl = new DefaultLoadControl();
-            mExoPlayer = ExoPlayerFactory.newSimpleInstance(this,renderersFactory, trackSelector, loadControl);
-            mExoPlayerView.setPlayer(mExoPlayer);
+                //ExoPlayer Setup
+                RenderersFactory renderersFactory = new DefaultRenderersFactory(this);
+                TrackSelector trackSelector = new DefaultTrackSelector();
+                LoadControl loadControl = new DefaultLoadControl();
+                mExoPlayer = ExoPlayerFactory.newSimpleInstance(this, renderersFactory, trackSelector, loadControl);
+                mExoPlayerView.setPlayer(mExoPlayer);
 
-            //MediaSource Setup
-            String userAgent = Util.getUserAgent(this, "Bake");
-            Uri videoUri = Uri.parse(mVideoUriString);
-            MediaSource mediaSource = new ExtractorMediaSource.Factory(new DefaultHttpDataSourceFactory(userAgent)).createMediaSource(videoUri);
+                //MediaSource Setup
+                String userAgent = Util.getUserAgent(this, "Bake");
+                Uri videoUri = Uri.parse(mVideoUriString);
+                MediaSource mediaSource = new ExtractorMediaSource.Factory(new DefaultHttpDataSourceFactory(userAgent)).createMediaSource(videoUri);
 
-            mExoPlayer.prepare(mediaSource);
-            mExoPlayer.setPlayWhenReady(true);
+                mExoPlayer.prepare(mediaSource);
+                mExoPlayer.setPlayWhenReady(true);
+            }
         }
     }
 
@@ -135,7 +147,7 @@ public class MediaActivity extends AppCompatActivity {
     }
 
     //Method to call when video is unavailable
-    private void  showError() {
+    private void showError() {
         mExoPlayerView.setVisibility(View.GONE);
         mVideoErrorText.setVisibility(View.VISIBLE);
     }
