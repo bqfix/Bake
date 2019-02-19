@@ -37,6 +37,7 @@
     <!-- Media Activity Strings -->
     <string name="media_activity_title_base">Step\u0020</string>
     <string name="info_unavailable_error">Step unavailable.</string>
+    <string name="video_unavailable_error">No video found.</string>
 
 
     <!-- Credit Strings -->
