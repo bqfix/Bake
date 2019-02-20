@@ -2,9 +2,10 @@ package com.example.android.bake;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,6 +16,7 @@ import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.LoadControl;
+import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.RenderersFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
@@ -25,14 +27,17 @@ import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
-public class MediaActivity extends AppCompatActivity {
+public class MediaActivity extends AppCompatActivity implements Player.EventListener {
 
     private static final int DEFAULT_STEP_NUMBER = 0;
 
+    private final String LOG_TAG = MediaActivity.class.getSimpleName();
     private Recipe mRecipe;
     private StepInstruction mCurrentStep;
     private SimpleExoPlayer mExoPlayer;
     private String mVideoUriString;
+    private MediaSessionCompat mMediaSession;
+    private PlaybackStateCompat.Builder mStateBuilder;
 
     private TextView mStepDescripText;
     private TextView mVideoErrorText;
@@ -82,24 +87,26 @@ public class MediaActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         initializePlayer();
+        initializeMediaSession();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         initializePlayer();
+        initializeMediaSession();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        releasePlayer();
+        releasePlayerAndMediaSession();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        releasePlayer();
+        releasePlayerAndMediaSession();
     }
 
     //Helper method for when a valid recipe is unavailable
@@ -124,6 +131,7 @@ public class MediaActivity extends AppCompatActivity {
                 TrackSelector trackSelector = new DefaultTrackSelector();
                 LoadControl loadControl = new DefaultLoadControl();
                 mExoPlayer = ExoPlayerFactory.newSimpleInstance(this, renderersFactory, trackSelector, loadControl);
+                mExoPlayer.addListener(this);
                 mExoPlayerView.setPlayer(mExoPlayer);
 
                 //MediaSource Setup
@@ -138,11 +146,14 @@ public class MediaActivity extends AppCompatActivity {
     }
 
     //Method to release ExoPlayer
-    private void releasePlayer() {
+    private void releasePlayerAndMediaSession() {
         if (mExoPlayer != null) {
             mExoPlayer.stop();
             mExoPlayer.release();
             mExoPlayer = null;
+        }
+        if (mMediaSession != null) {
+            mMediaSession.setActive(false);
         }
     }
 
@@ -150,5 +161,51 @@ public class MediaActivity extends AppCompatActivity {
     private void showError() {
         mExoPlayerView.setVisibility(View.GONE);
         mVideoErrorText.setVisibility(View.VISIBLE);
+    }
+
+    //Method to initialize a MediaSession
+    private void initializeMediaSession() {
+        mMediaSession = new MediaSessionCompat(this, LOG_TAG);
+        mMediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS | MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
+        mMediaSession.setMediaButtonReceiver(null);
+
+        mStateBuilder = new PlaybackStateCompat.Builder()
+                .setActions(PlaybackStateCompat.ACTION_PLAY |
+                        PlaybackStateCompat.ACTION_PAUSE |
+                        PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS |
+                        PlaybackStateCompat.ACTION_PLAY_PAUSE);
+
+        mMediaSession.setPlaybackState(mStateBuilder.build());
+        mMediaSession.setCallback(new StepMediaCallback());
+        mMediaSession.setActive(true);
+    }
+
+    //Overrides to allow Media Session handling
+    @Override
+    public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+        if((playbackState == Player.STATE_READY) && playWhenReady){
+            mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING, mExoPlayer.getCurrentPosition(), 1f);
+            mMediaSession.setPlaybackState(mStateBuilder.build());
+        } else if((playbackState == Player.STATE_READY)){
+            mStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED, mExoPlayer.getCurrentPosition(), 1f);
+            mMediaSession.setPlaybackState(mStateBuilder.build());
+        }
+    }
+
+    private class StepMediaCallback extends MediaSessionCompat.Callback {
+        @Override
+        public void onPause() {
+            mExoPlayer.setPlayWhenReady(false);
+        }
+
+        @Override
+        public void onPlay() {
+            mExoPlayer.setPlayWhenReady(true);
+        }
+
+        @Override
+        public void onSkipToPrevious() {
+            mExoPlayer.seekTo(0);
+        }
     }
 }
