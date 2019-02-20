@@ -132,17 +132,20 @@ public class MediaActivity extends AppCompatActivity implements Player.EventList
                 LoadControl loadControl = new DefaultLoadControl();
                 mExoPlayer = ExoPlayerFactory.newSimpleInstance(this, renderersFactory, trackSelector, loadControl);
                 mExoPlayer.addListener(this);
+                mExoPlayer.setPlayWhenReady(true);
                 mExoPlayerView.setPlayer(mExoPlayer);
 
-                //MediaSource Setup
-                String userAgent = Util.getUserAgent(this, "Bake");
-                Uri videoUri = Uri.parse(mVideoUriString);
-                MediaSource mediaSource = new ExtractorMediaSource.Factory(new DefaultHttpDataSourceFactory(userAgent)).createMediaSource(videoUri);
-
-                mExoPlayer.prepare(mediaSource);
-                mExoPlayer.setPlayWhenReady(true);
+                buildMediaSource();
             }
         }
+    }
+
+    //Method to assign the media to be player to the ExoPlayer
+    private void buildMediaSource() {
+        String userAgent = Util.getUserAgent(this, "Bake");
+        Uri videoUri = Uri.parse(mVideoUriString);
+        MediaSource mediaSource = new ExtractorMediaSource.Factory(new DefaultHttpDataSourceFactory(userAgent)).createMediaSource(videoUri);
+        mExoPlayer.prepare(mediaSource);
     }
 
     //Method to release ExoPlayer
