@@ -7,8 +7,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import com.example.android.bake.fragments.StepFragmentPagerAdapter;
 import com.example.android.bake.recipes.Recipe;
-import com.example.android.bake.utils.StepFragmentPagerAdapter;
 import com.google.android.exoplayer2.Player;
 
 public class MediaActivity extends AppCompatActivity implements Player.EventListener, ViewPager.OnPageChangeListener {
@@ -18,7 +18,6 @@ public class MediaActivity extends AppCompatActivity implements Player.EventList
     private final String LOG_TAG = MediaActivity.class.getSimpleName();
     private Recipe mRecipe;
     private int mCurrentStepNumber;
-    private FragmentPagerAdapter mFragmentPagerAdapter;
 
 
     @Override
@@ -44,13 +43,17 @@ public class MediaActivity extends AppCompatActivity implements Player.EventList
             infoUnavailable();
         }
 
-        //Setup fragment
-        ViewPager viewPager = (ViewPager) findViewById(R.id.media_step_fragment_viewpager);
-        mFragmentPagerAdapter = new StepFragmentPagerAdapter(getSupportFragmentManager(), this, mRecipe.getmSteps());
+        //Set page title
+        setTitle(getString(R.string.media_activity_title_base) + String.valueOf(mCurrentStepNumber));
 
-        viewPager.setAdapter(mFragmentPagerAdapter);
+        //Setup ViewPager
+        ViewPager viewPager = (ViewPager) findViewById(R.id.media_step_fragment_viewpager);
+        FragmentPagerAdapter fragmentPagerAdapter = new StepFragmentPagerAdapter(getSupportFragmentManager(), this, mRecipe.getmSteps());
+
+        viewPager.setAdapter(fragmentPagerAdapter);
         viewPager.addOnPageChangeListener(this);
         viewPager.setCurrentItem(mCurrentStepNumber);
+
     }
 
     //Helper method for when a valid recipe is unavailable

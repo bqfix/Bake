@@ -1,11 +1,10 @@
-package com.example.android.bake.utils;
+package com.example.android.bake.fragments;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.example.android.bake.StepFragment;
 import com.example.android.bake.recipes.StepInstruction;
 
 import java.util.List;
