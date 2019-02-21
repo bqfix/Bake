@@ -1,6 +1,7 @@
 package com.example.android.bake;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -62,8 +63,17 @@ public class DetailActivity extends AppCompatActivity implements StepAdapter.Ste
             mIngredientsText.append(ingredient.getComposedIngredient() + "\n\n");
         }
 
+        //Check orientation
+        boolean isLandscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+
         //Recycler Setup
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager layoutManager;
+        if (isLandscape){
+            layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        } else {
+            layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        }
+
         mStepAdapter = new StepAdapter(this);
 
         mStepRecycler.setLayoutManager(layoutManager);

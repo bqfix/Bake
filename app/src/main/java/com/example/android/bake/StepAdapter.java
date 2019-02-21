@@ -1,6 +1,7 @@
 package com.example.android.bake;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -52,7 +53,13 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
     @Override
     public StepViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         Context context = viewGroup.getContext();
-        int layoutIDForListItem = R.layout.step_recycler_item;
+        int layoutIDForListItem;
+        boolean isLandscape = viewGroup.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+        if (isLandscape) {
+            layoutIDForListItem = R.layout.step_recycler_item_horizontal;
+        } else {
+            layoutIDForListItem = R.layout.step_recycler_item;
+        }
         LayoutInflater inflater = LayoutInflater.from(context);
 
         View view = inflater.inflate(layoutIDForListItem, viewGroup, false);
