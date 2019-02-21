@@ -3,9 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <fragment
-        android:id="@+id/media_step_fragment"
-        android:name="com.example.android.bake.StepFragment"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/media_step_fragment_viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </FrameLayout>

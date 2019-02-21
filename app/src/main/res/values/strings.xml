@@ -39,6 +39,10 @@
     <string name="info_unavailable_error">Step unavailable.</string>
     <string name="video_unavailable_error">No video found.</string>
 
+    <!-- Fragment Strings -->
+    <string name="step_parcelable_key">step_parcelable</string>
+    <string name="video_uri_parcelable_key">video_parcelable</string>
+
 
     <!-- Credit Strings -->
     <string name="no_image_credit">Accessed from https://www.freeiconspng.com/img/23489</string>

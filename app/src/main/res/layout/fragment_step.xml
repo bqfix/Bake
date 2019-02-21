@@ -10,9 +10,8 @@
     tools:layout_editor_absoluteY="81dp">
 
 
-    <fragment
+    <FrameLayout
         android:id="@+id/step_exoplayer_fragment"
-        android:name="com.example.android.bake.ExoPlayerFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/scrollView2"
