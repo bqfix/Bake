@@ -1,12 +1,15 @@
 package com.example.android.bake.fragments;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.android.bake.R;
@@ -43,14 +46,25 @@ public class StepFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_step, container, false);
 
+        //Get views
+        FrameLayout exoPlayerContainer = (FrameLayout) rootView.findViewById(R.id.step_exoplayer_fragment_container);
+        ScrollView stepDescripScrollView = (ScrollView) rootView.findViewById(R.id.step_descrip_sv);
+
+        //Check screen orientation
+        boolean isLandscape = container.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+
+        if (isLandscape) { //Hide TextView
+            stepDescripScrollView.setVisibility(View.GONE);
+        } else { //Setup Description Text
+            stepDescripScrollView.setVisibility(View.VISIBLE);
+            TextView stepDescripText = (TextView) rootView.findViewById(R.id.media_step_descrip);
+            stepDescripText.setText(mStepInstruction.getmFullDescription());
+        }
+
         //Setup Exoplayer Fragment
         ExoPlayerFragment exoPlayerFragment = ExoPlayerFragment.newInstance(rootView.getContext(), mStepInstruction.getmVideoURL());
         FragmentManager fragmentManager = getChildFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.step_exoplayer_fragment, exoPlayerFragment).commit();
-
-        //Setup Description Text
-        TextView stepDescripText = (TextView) rootView.findViewById(R.id.media_step_descrip);
-        stepDescripText.setText(mStepInstruction.getmFullDescription());
+        fragmentManager.beginTransaction().replace(R.id.step_exoplayer_fragment_container, exoPlayerFragment).commit();
 
         return rootView;
     }

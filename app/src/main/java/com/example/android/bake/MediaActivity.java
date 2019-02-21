@@ -54,6 +54,8 @@ public class MediaActivity extends AppCompatActivity implements Player.EventList
         viewPager.addOnPageChangeListener(this);
         viewPager.setCurrentItem(mCurrentStepNumber);
 
+        fragmentPagerAdapter.notifyDataSetChanged();
+
     }
 
     //Helper method for when a valid recipe is unavailable

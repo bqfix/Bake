@@ -7,18 +7,18 @@
     android:layout_height="match_parent"
     android:background="@color/colorBackground"
     android:orientation="vertical"
-    tools:context=".MediaActivity"
-    tools:layout_editor_absoluteY="81dp">
+    tools:context=".MediaActivity">
 
 
     <FrameLayout
-        android:id="@+id/step_exoplayer_fragment"
+        android:id="@+id/step_exoplayer_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
     </FrameLayout>
 
     <ScrollView
+        android:id="@+id/step_descrip_sv"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
@@ -30,8 +30,6 @@
             android:padding="8dp"
             android:textColor="@android:color/black"
             android:textSize="24sp"
-            tools:layout_editor_absoluteX="35dp"
-            tools:layout_editor_absoluteY="298dp"
             tools:text="Mix the cake extensively until it is smooth, and then bake at 180 degrees celsius for an hour." />
     </ScrollView>
 
