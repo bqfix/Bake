@@ -17,16 +17,18 @@ import com.example.android.bake.recipes.StepInstruction;
 
 public class StepFragment extends Fragment {
     private StepInstruction mStepInstruction;
+    private boolean mIsTablet;
 
     public StepFragment() {
         // Required empty public constructor
     }
 
     //Factory method to create a new instance of this fragment
-    public static StepFragment newInstance(Context context, StepInstruction stepInstruction) {
+    public static StepFragment newInstance(Context context, StepInstruction stepInstruction, boolean isTablet) {
         StepFragment fragment = new StepFragment();
         Bundle args = new Bundle();
         args.putParcelable(context.getString(R.string.step_parcelable_key), stepInstruction);
+        args.putBoolean(context.getString(R.string.tablet_boolean_key), isTablet);
         fragment.setArguments(args);
         return fragment;
     }
@@ -38,6 +40,7 @@ public class StepFragment extends Fragment {
         //Retrieve StepInstruction
         if (getArguments() != null) {
             mStepInstruction = getArguments().getParcelable(getString(R.string.step_parcelable_key));
+            mIsTablet = getArguments().getBoolean(getString(R.string.tablet_boolean_key));
         }
     }
 
@@ -50,10 +53,10 @@ public class StepFragment extends Fragment {
         FrameLayout exoPlayerContainer = (FrameLayout) rootView.findViewById(R.id.step_exoplayer_fragment_container);
         ScrollView stepDescripScrollView = (ScrollView) rootView.findViewById(R.id.step_descrip_sv);
 
-        //Check screen orientation
+        //Check screen orientation and if on tablet
         boolean isLandscape = container.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
 
-        if (isLandscape) { //Hide TextView
+        if (isLandscape && !mIsTablet) { //Hide TextView
             stepDescripScrollView.setVisibility(View.GONE);
         } else { //Setup Description Text
             stepDescripScrollView.setVisibility(View.VISIBLE);

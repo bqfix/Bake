@@ -22,7 +22,7 @@ public class StepFragmentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return StepFragment.newInstance(mContext, mStepInstructions.get(position));
+        return StepFragment.newInstance(mContext, mStepInstructions.get(position), false); //ViewPager never used on tablet, should always be false if created from ViewPager
     }
 
     @Override

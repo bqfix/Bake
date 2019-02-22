@@ -16,11 +16,13 @@ import java.util.List;
 public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder> {
 
     private List<StepInstruction> mStepInstructions;
+    private boolean mIsTablet;
 
     private final StepClickHandler mStepClickHandler;
 
-    StepAdapter(StepClickHandler stepClickHandler) {
+    StepAdapter(StepClickHandler stepClickHandler, boolean isTablet) {
         mStepClickHandler = stepClickHandler;
+        mIsTablet = isTablet;
     }
 
 
@@ -30,10 +32,10 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
         private TextView mStepIdText;
         private TextView mStepDescripText;
 
+
         //Constructor
         public StepViewHolder(@NonNull View itemView) {
             super(itemView);
-
             mStepIdText = (TextView) itemView.findViewById(R.id.step_id_tv);
             mStepDescripText = (TextView) itemView.findViewById(R.id.step_card_descrip_tv);
 
@@ -55,7 +57,7 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
         Context context = viewGroup.getContext();
         int layoutIDForListItem;
         boolean isLandscape = viewGroup.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
-        if (isLandscape) {
+        if (isLandscape || mIsTablet) {
             layoutIDForListItem = R.layout.step_recycler_item_horizontal;
         } else {
             layoutIDForListItem = R.layout.step_recycler_item;
