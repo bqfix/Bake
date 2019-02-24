@@ -1,0 +1,35 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground"
+    android:padding="@dimen/widget_margin">
+
+    <ListView
+        android:id="@+id/widget_recipes_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/widget_ingredients_linear"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ListView
+            android:id="@+id/widget_ingredients_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_margin="8dp" />
+
+        <Button
+            android:id="@+id/widget_back_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/back_button" />
+
+    </LinearLayout>
+
+</FrameLayout>
