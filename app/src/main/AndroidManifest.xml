@@ -29,6 +29,9 @@
             android:launchMode="singleTop"
             android:parentActivityName=".DetailActivity" />
 
+        <service android:name=".ListWidgetService"/>
+        <service android:name=".UpdateWidgetService"/>
+
         <receiver android:name=".IngredientsWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

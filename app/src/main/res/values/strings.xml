@@ -50,4 +50,5 @@
 
     <!-- Widget Strings -->
     <string name="back_button">Back to Recipes</string>
+    <string name="recipe_number_key">recipe_number</string>
 </resources>
