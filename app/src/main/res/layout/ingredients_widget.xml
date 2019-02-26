@@ -1,35 +1,33 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/colorBackground"
-    android:padding="@dimen/widget_margin">
+    android:padding="@dimen/widget_margin"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/widget_recipe_name_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        tools:text="Nutella Pie"/>
 
     <ListView
-        android:id="@+id/widget_recipes_list"
+        android:id="@+id/widget_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp" />
 
-    <LinearLayout
-        android:id="@+id/widget_ingredients_linear"
+    <TextView
+        android:id="@+id/widget_empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:visibility="gone">
+        android:layout_margin="8dp"
+        android:textColor="@android:color/black"
+        android:textSize="12sp"/>
 
-        <ListView
-            android:id="@+id/widget_ingredients_list"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_margin="8dp" />
-
-        <Button
-            android:id="@+id/widget_back_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/back_button" />
-
-    </LinearLayout>
-
-</FrameLayout>
+</LinearLayout>

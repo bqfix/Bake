@@ -29,8 +29,8 @@
             android:launchMode="singleTop"
             android:parentActivityName=".DetailActivity" />
 
-        <service android:name=".ListWidgetService"/>
-        <service android:name=".UpdateWidgetService"/>
+        <service android:name=".ListWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"/>
 
         <receiver android:name=".IngredientsWidgetProvider">
             <intent-filter>

@@ -33,6 +33,10 @@
     <string name="detail_activity_title">Recipe</string>
     <string name="recipe_unavailable_error">Recipe not available.</string>
     <string name="step_number_key">step_number</string>
+    <string name="show_in_widget">Show in widget</string>
+    <string name="recipe_name_preferences_key">name_preferences</string>
+    <string name="ingredients_preferences_key">ingredients_preferences</string>
+    <string name="saved_to_widget">Saved to widget.</string>
 
     <!-- Media Activity Strings -->
     <string name="media_activity_title_base">Step\u0020</string>
@@ -51,4 +55,5 @@
     <!-- Widget Strings -->
     <string name="back_button">Back to Recipes</string>
     <string name="recipe_number_key">recipe_number</string>
+    <string name="no_recipe_selected">No recipe selected.\nPlease select a recipe in app.</string>
 </resources>

@@ -1,50 +1,34 @@
 package com.example.android.bake;
 
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import com.example.android.bake.recipes.Recipe;
-import com.example.android.bake.utils.JsonUtils;
-
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ListWidgetService extends RemoteViewsService {
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
-        RemoteViewsFactory remoteViewsFactory;
-        if (intent.hasExtra(getString(R.string.recipe_number_key))) { //Recipe number is available, create RemoteViewsFactory for ingredients
-            int recipeNumber = intent.getIntExtra(getString(R.string.recipe_number_key), -1);
-            remoteViewsFactory = new ListRemoteViewsFactory(this.getApplicationContext(), recipeNumber);
-        } else { //Create RemoteViewsFactory for recipes
-            remoteViewsFactory = new ListRemoteViewsFactory(this.getApplicationContext());
-        }
-        return remoteViewsFactory;
+        return new ListRemoteViewsFactory(this.getApplicationContext());
     }
 }
 
 class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
-    private final String JSON_LOCATION = "baking_recipes.json";
-    public static final int DEFAULT_RECIPE_NUMBER = -1;
-
-
     private Context mContext;
-    private List<Recipe> mRecipes;
-    private int mRecipeNumber = DEFAULT_RECIPE_NUMBER;
+    private String mRecipeName;
+    private List<String> mIngredients;
 
     //Constructor for Recipe List
     public ListRemoteViewsFactory(Context applicationContext) {
         mContext = applicationContext;
-    }
-
-    //Constructor for Ingredient List
-    public ListRemoteViewsFactory(Context applicationContext, int recipeNumber) {
-        mContext = applicationContext;
-        mRecipeNumber = recipeNumber;
     }
 
     @Override
@@ -54,7 +38,15 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public void onDataSetChanged() {
-        mRecipes = JsonUtils.parseJsonForRecipes(mContext, JSON_LOCATION);
+        //Populate mIngredients from SharedPreferences
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mIngredients = new ArrayList<>();
+        if (sharedPreferences.contains(mContext.getString(R.string.ingredients_preferences_key))) {//Populate from shared preferences
+            String ingredientString = sharedPreferences.getString(mContext.getString(R.string.ingredients_preferences_key), mContext.getString(R.string.no_recipe_selected));
+            mIngredients = Arrays.asList(ingredientString.split("::"));
+        } else { //Append error
+            mIngredients.add(mContext.getString(R.string.no_recipe_selected));
+        }
     }
 
     @Override
@@ -64,29 +56,14 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public int getCount() {
-        if (mRecipes == null) return 0;
-        return mRecipes.size();
+        if (mIngredients == null) return 0;
+        return mIngredients.size();
     }
 
     @Override
     public RemoteViews getViewAt(int position) {
         RemoteViews views = new RemoteViews(mContext.getPackageName(), R.layout.widget_list_item);
-        if (mRecipeNumber == DEFAULT_RECIPE_NUMBER) { //Logic for no recipe given, create recipe list
-            String recipeName = mRecipes.get(position).getmName();
-            views.setTextViewText(R.id.widget_list_item_text, recipeName);
-
-            //Set onclick to launch a service that will update widget to display ingredients
-            Intent intent = new Intent(mContext, UpdateWidgetService.class);
-            intent.setAction(UpdateWidgetService.ACTION_DISPLAY_INGREDIENTS);
-            intent.putExtra(mContext.getString(R.string.recipe_number_key), position);
-
-            PendingIntent pendingIntent = PendingIntent.getService(mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            views.setOnClickPendingIntent(R.id.widget_list_item_text, pendingIntent);
-        } else { //Recipe number given, create ingredients list
-            Recipe recipe = mRecipes.get(mRecipeNumber);
-            String ingredient = recipe.getmIngredients().get(position).getComposedIngredient();
-            views.setTextViewText(R.id.widget_list_item_text, ingredient);
-        }
+        views.setTextViewText(R.id.widget_list_item_text, mIngredients.get(position));
         return views;
     }
 
@@ -97,17 +74,17 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public int getViewTypeCount() {
-        return 0;
+        return 1;
     }
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     @Override
     public boolean hasStableIds() {
-        return false;
+        return true;
     }
 }
 
