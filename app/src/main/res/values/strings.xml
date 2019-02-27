@@ -49,8 +49,8 @@
     <string name="video_uri_parcelable_key">video_parcelable</string>
 
 
-    <!-- Credit Strings -->
-    <string name="no_image_credit">Accessed from https://www.freeiconspng.com/img/23489</string>
+    <!-- About Activity Strings -->
+    <string name="about">Recipes accessed from: \nhttps://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json\n\nNo Image Icon accessed from: \nhttps://www.freeiconspng.com/img/23489</string>
 
     <!-- Widget Strings -->
     <string name="back_button">Back to Recipes</string>
