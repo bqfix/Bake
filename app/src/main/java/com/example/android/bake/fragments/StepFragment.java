@@ -3,6 +3,7 @@ package com.example.android.bake.fragments;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import com.example.android.bake.recipes.StepInstruction;
 public class StepFragment extends Fragment {
     private StepInstruction mStepInstruction;
     private boolean mIsTablet;
+    private ExoPlayerFragment mExoPlayerFragment;
 
     public StepFragment() {
         // Required empty public constructor
@@ -42,6 +44,12 @@ public class StepFragment extends Fragment {
             mStepInstruction = getArguments().getParcelable(getString(R.string.step_parcelable_key));
             mIsTablet = getArguments().getBoolean(getString(R.string.tablet_boolean_key));
         }
+
+        //Attempt to restore previous ExoPlayerFragment
+        if (savedInstanceState != null && savedInstanceState.containsKey(getString(R.string.step_exoplayer_fragment_key))) {
+            FragmentManager fragmentManager = getChildFragmentManager();
+            mExoPlayerFragment = (ExoPlayerFragment) fragmentManager.getFragment(savedInstanceState, getString(R.string.step_exoplayer_fragment_key));
+        }
     }
 
     @Override
@@ -65,11 +73,21 @@ public class StepFragment extends Fragment {
         }
 
         //Setup Exoplayer Fragment
-        ExoPlayerFragment exoPlayerFragment = ExoPlayerFragment.newInstance(rootView.getContext(), mStepInstruction.getmVideoURL());
         FragmentManager fragmentManager = getChildFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.step_exoplayer_fragment_container, exoPlayerFragment).commit();
+        if (mExoPlayerFragment == null) {
+            mExoPlayerFragment = ExoPlayerFragment.newInstance(rootView.getContext(), mStepInstruction.getmVideoURL());
+        }
+        fragmentManager.beginTransaction().replace(R.id.step_exoplayer_fragment_container, mExoPlayerFragment).commit();
 
         return rootView;
     }
 
+    //Save instance of ExoPlayerFragment if it exists
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        FragmentManager fragmentManager = getChildFragmentManager();
+        fragmentManager.putFragment(outState, getString(R.string.step_exoplayer_fragment_key), mExoPlayerFragment);
+
+        super.onSaveInstanceState(outState);
+    }
 }

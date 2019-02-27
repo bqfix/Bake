@@ -48,6 +48,9 @@
     <string name="step_parcelable_key">step_parcelable</string>
     <string name="tablet_boolean_key">tablet_boolean</string>
     <string name="video_uri_parcelable_key">video_parcelable</string>
+    <string name="exoplayer_position_key">exoplayer_position</string>
+    <string name="exoplayer_playwhenready_key">exxoplayer_playwhenready</string>
+    <string name="step_exoplayer_fragment_key">step_exoplayer_fragment</string>
 
 
     <!-- About Activity Strings -->

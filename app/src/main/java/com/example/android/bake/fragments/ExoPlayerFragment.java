@@ -2,10 +2,13 @@ package com.example.android.bake.fragments;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,22 +32,25 @@ import com.google.android.exoplayer2.util.Util;
 
 public class ExoPlayerFragment extends Fragment implements Player.EventListener {
 
-    private String LOG_TAG = "ExoPlayerFragment";
+    private final String LOG_TAG = "ExoPlayerFragment";
+    private final long EXOPLAYER_POS_DEFAULT = 0;
 
     private String mVideoUriString;
     private SimpleExoPlayer mExoPlayer;
     private MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mStateBuilder;
+    private long mExoPlayerPos;
+    private boolean mExoPlayerPlayWhenReady;
 
     private TextView mVideoErrorText;
     private PlayerView mExoPlayerView;
 
-    public ExoPlayerFragment(){
+    public ExoPlayerFragment() {
         //Required empty constructor
     }
 
     //Factory method to create a new instance of this fragment
-    public static ExoPlayerFragment newInstance(Context context, String videoUriString){
+    public static ExoPlayerFragment newInstance(Context context, String videoUriString) {
         ExoPlayerFragment fragment = new ExoPlayerFragment();
         Bundle args = new Bundle();
         args.putString(context.getString(R.string.video_uri_parcelable_key), videoUriString);
@@ -59,6 +65,15 @@ public class ExoPlayerFragment extends Fragment implements Player.EventListener 
         if (getArguments() != null) {
             mVideoUriString = getArguments().getString(getString(R.string.video_uri_parcelable_key), "");
         }
+
+        //Check for savedInstanceState
+        if (savedInstanceState != null && savedInstanceState.containsKey(getString(R.string.exoplayer_position_key))) {
+            mExoPlayerPos = savedInstanceState.getLong(getString(R.string.exoplayer_position_key), EXOPLAYER_POS_DEFAULT);
+            mExoPlayerPlayWhenReady = savedInstanceState.getBoolean(getString(R.string.exoplayer_playwhenready_key), false);
+        } else {
+            mExoPlayerPos = EXOPLAYER_POS_DEFAULT;
+            mExoPlayerPlayWhenReady = false;
+        }
     }
 
     @Override
@@ -72,16 +87,49 @@ public class ExoPlayerFragment extends Fragment implements Player.EventListener 
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
+            initializePlayer(mVideoUriString);
+            initializeMediaSession();
+        }
+    }
+
+
+    @Override
     public void onResume() {
         super.onResume();
-        initializePlayer(mVideoUriString);
-        initializeMediaSession();
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            initializePlayer(mVideoUriString);
+            initializeMediaSession();
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        releasePlayerAndMediaSession();
+        saveMediaState();
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            releasePlayerAndMediaSession();
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        //Check if value has changed from default, if so, state has been saved, needs to be included in Bundle
+        if (mExoPlayerPos != EXOPLAYER_POS_DEFAULT) {
+            outState.putLong(getString(R.string.exoplayer_position_key), mExoPlayerPos);
+            outState.putBoolean(getString(R.string.exoplayer_playwhenready_key), mExoPlayerPlayWhenReady);
+        }
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
+            releasePlayerAndMediaSession();
+        }
     }
 
     //Method to intialize ExoPlayer
@@ -100,10 +148,10 @@ public class ExoPlayerFragment extends Fragment implements Player.EventListener 
                 LoadControl loadControl = new DefaultLoadControl();
                 mExoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity(), renderersFactory, trackSelector, loadControl);
                 mExoPlayer.addListener(this);
-                mExoPlayer.setPlayWhenReady(false);
                 mExoPlayerView.setPlayer(mExoPlayer);
-
                 buildMediaSource(videoUriString);
+                mExoPlayer.setPlayWhenReady(mExoPlayerPlayWhenReady);
+                mExoPlayer.seekTo(mExoPlayerPos);
             }
         }
     }
@@ -154,10 +202,10 @@ public class ExoPlayerFragment extends Fragment implements Player.EventListener 
     //Overrides to allow Media Session handling
     @Override
     public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-        if((playbackState == Player.STATE_READY) && playWhenReady){
+        if ((playbackState == Player.STATE_READY) && playWhenReady) {
             mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING, mExoPlayer.getCurrentPosition(), 1f);
             mMediaSession.setPlaybackState(mStateBuilder.build());
-        } else if((playbackState == Player.STATE_READY)){
+        } else if ((playbackState == Player.STATE_READY)) {
             mStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED, mExoPlayer.getCurrentPosition(), 1f);
             mMediaSession.setPlaybackState(mStateBuilder.build());
         }
@@ -177,6 +225,13 @@ public class ExoPlayerFragment extends Fragment implements Player.EventListener 
         @Override
         public void onSkipToPrevious() {
             mExoPlayer.seekTo(0);
+        }
+    }
+
+    private void saveMediaState(){
+        if (mExoPlayer != null) {
+            mExoPlayerPos = mExoPlayer.getCurrentPosition();
+            mExoPlayerPlayWhenReady = mExoPlayer.getPlayWhenReady();
         }
     }
 }
