@@ -29,6 +29,8 @@
     <string name="main_activity_title">Cookbook</string>
     <string name="recipe_parcelable_key">recipe_parcelable</string>
     <string name="menu_about">About</string>
+    <string name="loading_error">An error occured while loading.\n\nPlease check your internet connection.\n\nClick anywhere to try again.</string>
+    <string name="all_recipes_parcelable_key">all_recipes_parcelable</string>
 
     <!-- Detail Activity Strings -->
     <string name="detail_activity_title">Recipe</string>

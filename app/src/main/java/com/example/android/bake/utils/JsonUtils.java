@@ -16,6 +16,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,17 +32,14 @@ public class JsonUtils {
     private static final String LOG_TAG = JsonUtils.class.getSimpleName();
 
     /**
-     * A method to extract a List of Recipes from a provided jsonLocation
+     * A method to extract a List of Recipes from a provided jsonResponse
      *
      * @param context      of the calling activity
-     * @param jsonLocation of the file to be parsed
+     * @param jsonResponse of the file to be parsed
      * @return a List of Recipes
      */
-    public static List<Recipe> parseJsonForRecipes(Context context, String jsonLocation) {
+    public static List<Recipe> parseJsonForRecipes(Context context, String jsonResponse) {
         List<Recipe> recipes = new ArrayList<>();
-        String jsonResponse;
-        jsonResponse = loadJsonFromAssets(context, jsonLocation);
-
         try {
             JSONArray recipesArray = new JSONArray(jsonResponse);
             //Iterate through, and create/add a Recipe object for each
@@ -104,18 +104,76 @@ public class JsonUtils {
     }
 
     /**
-     * A helper method to read a provided Json file and return the contents as a string
+     * Builds the URL
      *
-     * @param context      provided from the calling method (parseJsonForRecipes)
-     * @param jsonLocation provided from the calling method (parseJsonForRecipes)
-     * @return a String created from the Json
+     * @param stringUrl the url to be input
+     * @return The URL to query
      */
-    private static String loadJsonFromAssets(Context context, String jsonLocation) {
-        StringBuilder output = new StringBuilder();
-
+    public static URL buildURL(String stringUrl) {
+        URL url = null;
         try {
-            InputStream inputStream = context.getAssets().open(jsonLocation);
+            url = new URL(stringUrl);
+        } catch (MalformedURLException exception) {
+            Log.e(LOG_TAG, exception.getMessage());
+        }
+        return url;
+    }
 
+    /**
+     * Method to make the initial Http request
+     *
+     * @param url the url to be used (likely generated from buildURL method)
+     * @return a string with the full JSON response to be parsed by extractStories method
+     */
+    public static String makeHttpRequest(URL url) {
+        String jsonResponse = "";
+        if (url == null) {
+            return jsonResponse;
+        }
+
+        HttpURLConnection urlConnection = null;
+        InputStream inputStream = null;
+        try {
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestMethod("GET");
+            urlConnection.connect();
+
+            //Read data if valid connection was made
+            int responseCode = urlConnection.getResponseCode();
+            if (responseCode == 200) {
+                inputStream = urlConnection.getInputStream();
+                jsonResponse = readFromStream(inputStream);
+            } else {
+                Log.e(LOG_TAG, "Error response code: " + responseCode);
+            }
+        } catch (IOException exception) {
+            Log.e(LOG_TAG, "Could not connect");
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
+            try {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+            } catch (IOException exception) {
+                Log.e(LOG_TAG, "Failed to close input stream");
+            }
+
+        }
+        return jsonResponse;
+    }
+
+    /**
+     * Helper method to perform the reading from the input stream
+     *
+     * @param inputStream provided from the makeHttpRequest method
+     * @return a built JSONResponse to be returned by the makeHttpRequest method
+     * @throws IOException that is handled by the makeHttpRequest method which calls this method
+     */
+    private static String readFromStream(InputStream inputStream) throws IOException {
+        StringBuilder output = new StringBuilder();
+        if (inputStream != null) {
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream, Charset.forName("UTF-8"));
             BufferedReader reader = new BufferedReader(inputStreamReader);
             String line = reader.readLine();
@@ -123,11 +181,7 @@ public class JsonUtils {
                 output.append(line);
                 line = reader.readLine();
             }
-            inputStream.close();
-        } catch (IOException ioException) {
-            Log.e(LOG_TAG, ioException.getMessage());
         }
-
         return output.toString();
     }
 }
