@@ -5,12 +5,16 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.android.bake.recipes.Recipe;
 import com.example.android.bake.utils.JsonUtils;
 
 import java.util.List;
+import java.util.zip.Inflater;
 
 /************************************
  * The MainActivity which displays  *
@@ -52,5 +56,25 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
         Intent detailIntent = new Intent(MainActivity.this, DetailActivity.class);
         detailIntent.putExtra(getString(R.string.recipe_parcelable_key), recipe);
         startActivity(detailIntent);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = this.getMenuInflater();
+        inflater.inflate(R.menu.main_activity_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case (R.id.action_about) : {
+                Intent intent = new Intent(MainActivity.this, AboutActivity.class);
+                startActivity(intent);
+                return true;
+            }
+            default: return super.onOptionsItemSelected(item);
+        }
+
     }
 }

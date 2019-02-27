@@ -28,6 +28,7 @@
     <string name="recipe_image_descrip">Recipe Image</string>
     <string name="main_activity_title">Cookbook</string>
     <string name="recipe_parcelable_key">recipe_parcelable</string>
+    <string name="menu_about">About</string>
 
     <!-- Detail Activity Strings -->
     <string name="detail_activity_title">Recipe</string>
