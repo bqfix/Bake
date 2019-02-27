@@ -1,6 +1,8 @@
 package com.example.android.bake.fragments;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,6 +31,8 @@ import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+
+import static android.content.Context.CONNECTIVITY_SERVICE;
 
 public class ExoPlayerFragment extends Fragment implements Player.EventListener {
 
@@ -134,7 +138,11 @@ public class ExoPlayerFragment extends Fragment implements Player.EventListener 
 
     //Method to intialize ExoPlayer
     private void initializePlayer(String videoUriString) {
-        if (videoUriString == null || videoUriString.isEmpty()) {
+        //Check network status to see if videos are accessible
+        ConnectivityManager cm = (ConnectivityManager) getActivity().getApplicationContext().getSystemService(CONNECTIVITY_SERVICE);
+        final NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+
+        if (videoUriString == null || videoUriString.isEmpty() || activeNetwork == null) {
             showError();
         } else {
             if (mExoPlayer == null) {
