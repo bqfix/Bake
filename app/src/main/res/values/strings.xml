@@ -56,7 +56,7 @@
 
 
     <!-- About Activity Strings -->
-    <string name="about">Recipes accessed from: \nhttps://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json\n\nNo Image Icon accessed from: \nhttps://www.freeiconspng.com/img/23489</string>
+    <string name="about">Recipes accessed from: \nhttps://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json\n\nNo Image Icon accessed from: \nhttps://www.freeiconspng.com/img/23489\n\nOriginal cupcake icon from Freepik on www.flaticon.com</string>
 
     <!-- Widget Strings -->
     <string name="back_button">Back to Recipes</string>
