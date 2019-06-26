@@ -23,7 +23,6 @@ public class ListWidgetService extends RemoteViewsService {
 class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
     private Context mContext;
-    private String mRecipeName;
     private List<String> mIngredients;
 
     //Constructor for Recipe List
